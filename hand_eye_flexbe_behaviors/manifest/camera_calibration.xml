@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="camera_calibration">
+
+	<executable package_path="hand_eye_flexbe_behaviors.camera_calibration_sm" class="camera_calibrationSM" />
+	<tagstring></tagstring>
+	<author>Luis</author>
+	<date>Tue Nov 15 2022</date>
+	<description>
+		camera_calibration
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="pic_num" default="30" label="pic_num" hint="Sets the pic_num">
+			<min value="0" />
+			<max value="50" />
+		</param>
+
+		<param type="numeric" name="square_size" default="0.0200" label="square_size" hint="Sets the square_size">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="marker_size" default="0.0150" label="marker_size" hint="Sets the marker_size">
+			<min value="0" />
+			<max value="1" />
+		</param>
+
+		<param type="numeric" name="col_count" default="10" label="col_count" hint="Sets the col_count">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+		<param type="numeric" name="row_count" default="14" label="row_count" hint="Sets the row_count">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+		<param type="text" name="camera_type" default="realsense" label="camera_type" hint="Sets the camera_type" />
+
+		<param type="text" name="save_file_name" default="camera_calibration.ini" label="save_file_name" hint="Sets the save_file_name" />
+
+	</params>
+
+
+</behavior>

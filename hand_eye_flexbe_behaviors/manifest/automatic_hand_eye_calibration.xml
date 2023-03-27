@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Automatic Hand Eye Calibration">
+
+	<executable package_path="hand_eye_flexbe_behaviors.automatic_hand_eye_calibration_sm" class="AutomaticHandEyeCalibrationSM" />
+	<tagstring>v0</tagstring>
+	<author>Luis Tsai</author>
+	<date>Sun Nov 14 2021</date>
+	<description>
+		Execute hand eye calibration by manual
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="boolean" name="eye_in_hand_mode" default="False" label="eye_in_hand_mode" hint="Sets the eye_in_hand_mode" />
+
+		<param type="boolean" name="customize_file" default="False" label="customize_file" hint="Sets the customize_file" />
+
+		<param type="numeric" name="calib_pose_num" default="0" label="calib_pose_num" hint="Sets the calib_pose_num">
+			<min value="0" />
+			<max value="20" />
+		</param>
+
+		<param type="text" name="base_link" default="/base_link" label="base_link" hint="Sets the base_link" />
+
+		<param type="text" name="tip_link" default="/tool0_controller" label="tip_link" hint="Sets the tip_link" />
+
+		<param type="text" name="calibration_file_name" default="hand_eye_calibration.ini" label="calibration_file_name" hint="Sets the calibration_file_name" />
+
+		<param type="numeric" name="move_distance" default="0.10" label="move_distance" hint="Sets the move_distance">
+			<min value="0" />
+			<max value="0.30" />
+		</param>
+
+		<param type="text" name="reference_frame" default="base_link" label="reference_frame" hint="Sets the reference_frame" />
+
+		<param type="text" name="group_name" default="manipulator" label="group_name" hint="Sets the group_name" />
+
+		<param type="text" name="axis" default="x-y-z" label="axis" hint="Sets the axis" />
+
+		<param type="numeric" name="points_num" default="24" label="points_num" hint="Sets the points_num">
+			<min value="0" />
+			<max value="24" />
+		</param>
+
+	</params>
+
+
+</behavior>
