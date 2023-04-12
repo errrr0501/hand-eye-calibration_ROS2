@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import enum
-import rospy
 import moveit_commander
 from moveit_msgs.msg import MoveItErrorCodes
 from flexbe_core import EventState, Logger

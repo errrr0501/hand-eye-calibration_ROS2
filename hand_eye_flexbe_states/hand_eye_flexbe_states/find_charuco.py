@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import rospy
 import tf
-from flexbe_core import EventState
+from flexbe_core import EventState, Logger
 from geometry_msgs.msg import Transform
 from visp_hand2eye_calibration.msg import TransformArray
 import time
@@ -26,38 +25,38 @@ class FindCharucoState(EventState):
 		self.camera_h_charuco = TransformArray()
 		self.base_h_tool.header.frame_id = self.base_link
 		self.camera_h_charuco.header.frame_id = 'calib_camera'
-		self.enter_time = rospy.Time.now()
+		self.enter_time = FindCharucoState._node.get_clock().now()
 		self.eye_in_hand_mode = eye_in_hand_mode
 
 	def execute(self, userdata):
 		time.sleep(1.5)
-		if (rospy.Time.now() - self.enter_time).to_sec() > 2:
-			rospy.logwarn('Can not get charuco board pose, abandon this position')
+		if (FindCharucoState._node.get_clock().now() - self.enter_time).to_sec() > 2:
+			Logger.logwarn('Can not get charuco board pose, abandon this position')
 			return 'done'
 
 
 		if self.eye_in_hand_mode:
 			try:
-				(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_camera', '/calib_charuco', rospy.Time.now())
+				(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_camera', '/calib_charuco', FindCharucoState._node.get_clock().now())
 			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-				rospy.logwarn('lookupTransform for charuco failed!')
+				Logger.logwarn('lookupTransform for charuco failed!')
 				return
 		else:
 			try:
-				(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_charuco', '/calib_camera', rospy.Time.now())
+				(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_charuco', '/calib_camera', FindCharucoState._node.get_clock().now())
 			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-				rospy.logwarn('lookupTransform for charuco failed!')
+				Logger.logwarn('lookupTransform for charuco failed!')
 				return
 		try:
-			(base_trans_tool, base_rot_tool) = self.tf_listener.lookupTransform(self.base_link, self.tip_link, rospy.Time(0))
+			(base_trans_tool, base_rot_tool) = self.tf_listener.lookupTransform(self.base_link, self.tip_link, FindCharucoState._node.get_clock().now())
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-			rospy.logwarn('lookupTransform for robot failed!, ' + self.base_link + ', ' + self.tip_link)
+			Logger.logwarn('lookupTransform for robot failed!, ' + self.base_link + ', ' + self.tip_link)
 			return
 
 		# try:
 		# 	(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_camera', '/calib_charuco', rospy.Time.now())
 		# except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-		# 	rospy.logwarn('lookupTransform for charuco failed!')
+		# 	Logger.logwarn('lookupTransform for charuco failed!')
 		# 	return
 
 		trans = Transform()
@@ -97,4 +96,4 @@ class FindCharucoState(EventState):
 			return 'done'
 			
 	def on_enter(self, userdata):
-		self.enter_time = rospy.Time.now()
+		self.enter_time = FindCharucoState._node.get_clock().now()

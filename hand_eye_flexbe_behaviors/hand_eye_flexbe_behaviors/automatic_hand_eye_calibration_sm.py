@@ -36,6 +36,12 @@ class AutomaticHandEyeCalibrationSM(Behavior):
 		self.node = node
 
 		# parameters of this behavior
+		ComputeCalibState.initialize_ros(node)
+		FindCharucoState.initialize_ros(node)
+		GenerateHandEyePointState.initialize_ros(node)
+		InitialPoseState.initialize_ros(node)
+		MoveRobotManuallyState.initialize_ros(node)
+		MoveitHandEyeExecuteState.initialize_ros(node)
 		OperatableStateMachine.initialize_ros(node)
 		Logger.initialize(node)
 		self.add_parameter('eye_in_hand_mode', False)

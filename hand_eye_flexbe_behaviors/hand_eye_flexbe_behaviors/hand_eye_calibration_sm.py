@@ -33,8 +33,15 @@ class HandEyeCalibrationSM(Behavior):
 	def __init__(self, node):
 		super(HandEyeCalibrationSM, self).__init__()
 		self.name = 'Hand Eye Calibration'
+		self.node = node
 
 		# parameters of this behavior
+		ComputeCalibState.initialize_ros(node)
+		TrajectoryExecuteState.initialize_ros(node)
+		FindCharucoState.initialize_ros(node)
+		GetCalibPoseState.initialize_ros(node)
+		MoveCharucoCenterState.initialize_ros(node)
+		PosePlanState.initialize_ros(node)
 		OperatableStateMachine.initialize_ros(node)
 		Logger.initialize(node)
 		self.add_parameter('eye_in_hand', False)

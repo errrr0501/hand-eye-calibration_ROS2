@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import rospy
 from flexbe_core import EventState
 
 
@@ -22,12 +21,12 @@ class AutomaticMoveRobot(EventState):
         self._pose_count = 0
 
     def execute(self, userdata):
-        elapsed = rospy.get_rostime() - self._start_time
+        elapsed = AutomaticMoveRobot._node.get_clock().now() - self._start_time
         userdata.result_compute = self._pose_count >= self._pose_num
         if elapsed.to_sec() > self._wait:
             return 'done'
 
     def on_enter(self, userdata):
         '''Upon entering the state, save the current time and start waiting.'''
-        self._start_time = rospy.get_rostime()
+        self._start_time = AutomaticMoveRobot._node.get_clock().now()
         self._pose_count += 1

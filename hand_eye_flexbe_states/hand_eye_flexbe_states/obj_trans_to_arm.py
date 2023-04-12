@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import rospy,os
-import copy
+import copy, os
 import configparser
 import numpy as np
 import math as m
@@ -165,7 +164,7 @@ class ObjTransToArmState(EventState):
 		try:
 			res = self.trans2robot_client.call(self.trans2robot_service, req)
 		except rospy.ServiceException as e:
-			rospy.logerr("Service call failed: %s" % e)
+			Logger.loginfo("Service call failed: %s" % e)
 			return 'failed'
 
 		self.excute_pos = res.pos

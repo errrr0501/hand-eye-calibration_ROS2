@@ -29,8 +29,11 @@ class camera_calibrationSM(Behavior):
 	def __init__(self, node):
 		super(camera_calibrationSM, self).__init__()
 		self.name = 'camera_calibration'
+		self.node = node
 
 		# parameters of this behavior
+		CharucoCameraCalibrationState.initialize_ros(node)
+		TakePictureState.initialize_ros(node)
 		OperatableStateMachine.initialize_ros(node)
 		Logger.initialize(node)
 		self.add_parameter('pic_num', 30)

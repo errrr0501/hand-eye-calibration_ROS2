@@ -31,8 +31,13 @@ class verify_calibraionSM(Behavior):
 	def __init__(self, node):
 		super(verify_calibraionSM, self).__init__()
 		self.name = 'verify_calibraion'
+		self.node = node
 
 		# parameters of this behavior
+		GetArMarkerState.initialize_ros(node)
+		InitialPoseState.initialize_ros(node)
+		MoveitPlanExecuteState.initialize_ros(node)
+		ObjTransToArmState.initialize_ros(node)
 		OperatableStateMachine.initialize_ros(node)
 		Logger.initialize(node)
 		self.add_parameter('eye_in_hand_mode', False)

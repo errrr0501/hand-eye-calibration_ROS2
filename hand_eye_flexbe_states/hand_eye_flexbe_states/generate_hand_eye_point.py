@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import rospy
 import copy
 import moveit_commander
 from moveit_msgs.msg import MoveItErrorCodes
@@ -87,9 +86,9 @@ class GenerateHandEyePointState(EventState):
 
 	def centralize_pose(self):
 		try:
-			(tool_trans_base, tool_rot_base) = self.tf_listener.lookupTransform(self.tip_link, self.base_link, rospy.Time(0))
+			(tool_trans_base, tool_rot_base) = self.tf_listener.lookupTransform(self.tip_link, self.base_link, GenerateHandEyePointState._node.get_clock().now())
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-			rospy.logwarn('lookupTransform for robot failed!, ' + self.tip_link + ', ' + self.base_link)
+			Logger.logwarn('lookupTransform for robot failed!, ' + self.tip_link + ', ' + self.base_link)
 			return
 
 		tool_base_cen_m = self.tf_listener.fromTranslationRotation((tool_trans_base[0]+self.cen_delta_x,
@@ -121,9 +120,9 @@ class GenerateHandEyePointState(EventState):
 		# input()
 
 		try:
-			(tool_trans_base, tool_rot_base) = self.tf_listener.lookupTransform(self.tip_link, self.base_link, rospy.Time(0))
+			(tool_trans_base, tool_rot_base) = self.tf_listener.lookupTransform(self.tip_link, self.base_link, self.get_clock().now())
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-			rospy.logwarn('lookupTransform for robot failed!, ' + self.tip_link + ', ' + self.base_link)
+			Logger.logwarn('lookupTransform for robot failed!, ' + self.tip_link + ', ' + self.base_link)
 			return
 
 		# tool_rotation = list(euler_from_quaternion([tool_rot_base[0],tool_rot_base[1],tool_rot_base[2],tool_rot_base[3]]))

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import rospy
 import numpy as np
 import moveit_commander
 from moveit_msgs.msg import MoveItErrorCodes

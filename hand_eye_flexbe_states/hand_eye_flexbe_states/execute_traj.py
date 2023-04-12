@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-
-import rospy
 import moveit_commander
 from moveit_msgs.msg import MoveItErrorCodes
 from math import pi, radians

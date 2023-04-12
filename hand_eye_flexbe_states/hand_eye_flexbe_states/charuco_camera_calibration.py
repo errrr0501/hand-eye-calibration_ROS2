@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import rospy,rospkg
 from flexbe_core import EventState
 import time
 import numpy
@@ -179,5 +178,6 @@ class CharucoCameraCalibrationState(EventState):
 		return 'done'
 			
 	def on_enter(self, userdata):
-		self.enter_time = rospy.Time.now()
+		self.enter_time = CharucoCameraCalibrationState._node.get_clock().now()
+
 		pass

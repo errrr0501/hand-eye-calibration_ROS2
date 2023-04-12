@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import rospy
 from flexbe_core import EventState
 import cv2
 import pyrealsense2 as rs
@@ -21,6 +20,7 @@ class TakePictureState(EventState):
     def __init__(self, pic_num, camera_type):
         """Constructor"""
         super(TakePictureState, self).__init__(outcomes=['done', 'failed'])
+        print("+++++++++++++++++++++++++++++++++++++++")
         self.excu_num = 1
         self.pic_num = pic_num
         if camera_type == 'realsense':
@@ -104,7 +104,8 @@ class TakePictureState(EventState):
                 return 'done'
             
     def on_enter(self, userdata):
-        self.enter_time = rospy.Time.now()
+        self.enter_time = TakePictureState._node.get_clock().now()
+        print(self.enter_time)
         pass
 
 

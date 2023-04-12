@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import rospy
 import tf
-from flexbe_core import EventState
+from flexbe_core import EventState, Logger
 from geometry_msgs.msg import Transform
 from visp_hand2eye_calibration.msg import TransformArray
 import time
@@ -27,25 +26,25 @@ class GetArMarkerState(EventState):
 		self.camera_h_charuco = TransformArray()
 		# self.base_h_tool.header.frame_id = self.base_link
 		self.camera_h_charuco.header.frame_id = 'calib_camera'
-		self.enter_time = rospy.Time.now()
+		self.enter_time = GetArMarkerState._node.get_clock().now()
 
 	def execute(self, userdata):
 		time.sleep(1)
-		if (rospy.Time.now() - self.enter_time).to_sec() > 2:
-			rospy.logwarn('Can not get charuco board pose, abandon this position')
+		if (GetArMarkerState._node.get_clock().now() - self.enter_time).to_sec() > 2:
+			Logger.logwarn('Can not get charuco board pose, abandon this position')
 			return 'failed'
 
 
 		try:
-			(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_camera', '/calib_charuco', rospy.Time.now())
+			(camera_trans_charuco, camera_rot_charuco) = self.tf_listener.lookupTransform('/calib_camera', '/calib_charuco', self.get_clock().now())
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-			rospy.logwarn('lookupTransform for charuco failed!')
+			Logger.logwarn('lookupTransform for charuco failed!')
 			return
 
 		# try:
 		# 	(base_trans_tool, base_rot_tool) = self.tf_listener.lookupTransform(self.base_link, self.tip_link, rospy.Time(0))
 		# except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-		# 	rospy.logwarn('lookupTransform for robot failed!, ' + self.base_link + ', ' + self.tip_link)
+		# 	self.get_logger().warn('lookupTransform for robot failed!, ' + self.base_link + ', ' + self.tip_link)
 		# 	return
 
 
@@ -87,4 +86,4 @@ class GetArMarkerState(EventState):
 		# 	return 'done'
 			
 	def on_enter(self, userdata):
-		self.enter_time = rospy.Time.now()
+		self.enter_time = GetArMarkerState._node.get_clock().now()
