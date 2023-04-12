@@ -41,7 +41,7 @@ class CharucoCameraCalibrationState(EventState):
 		self.corners_all = [] # Corners discovered in all images processed
 		self.ids_all = [] # Aruco ids corresponding to corners discovered
 		self.image_size = None # Determined at runtime
-		self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..','charuco_detector/','config/','camera_calibration/')
+		self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..',',','charuco_detector_ROS2/','charuco_detector/','config/','camera_calibration/')
 
 
 		self.images = glob.glob(self.save_pwd + 'pic/camera-pic-of-charucoboard-*.jpg')
