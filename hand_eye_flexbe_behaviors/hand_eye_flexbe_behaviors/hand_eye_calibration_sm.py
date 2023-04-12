@@ -30,11 +30,13 @@ class HandEyeCalibrationSM(Behavior):
 	'''
 
 
-	def __init__(self):
+	def __init__(self, node):
 		super(HandEyeCalibrationSM, self).__init__()
 		self.name = 'Hand Eye Calibration'
 
 		# parameters of this behavior
+		OperatableStateMachine.initialize_ros(node)
+		Logger.initialize(node)
 		self.add_parameter('eye_in_hand', False)
 		self.add_parameter('group_name', 'manipulator')
 

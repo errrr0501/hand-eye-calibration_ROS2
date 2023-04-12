@@ -1,38 +1,30 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(hand_eye_flexbe_behaviors)
 
-find_package(catkin REQUIRED 
-  std_msgs
-  message_generation)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and global scripts declared therein get installed
-## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-catkin_python_setup()
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 
-# add_message_files(
-#   FILES
-# )
+install(DIRECTORY
+  manifest
+  DESTINATION lib/${PROJECT_NAME}
+)
 
-# generate_messages(
-#   DEPENDENCIES std_msgs 
-# )
+install(DIRECTORY
+  config
+  DESTINATION lib/${PROJECT_NAME}
+)
 
-# specify catkin-specific information
-# INCLUDE_DIRS - The exported include paths (i.e. cflags) for the package
-# LIBRARIES - The exported libraries from the project
-# CATKIN_DEPENDS - Other catkin projects that this project depends on
-# DEPENDS - Non-catkin CMake projects that this project depends on
-# CFG_EXTRAS - Additional configuration options 
-catkin_package(
-#    INCLUDE_DIRS src
-    LIBRARIES ${PROJECT_NAME} std_msgs message_runtime)
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
 
-# use add_library() or add_executable() as required
-#add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SRCS})
-
-# install executables
-#install(PROGRAMS bin/hello
-#        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-install(DIRECTORY manifest DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+ament_package()

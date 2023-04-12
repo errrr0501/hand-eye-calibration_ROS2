@@ -28,11 +28,13 @@ class verify_calibraionSM(Behavior):
 	'''
 
 
-	def __init__(self):
+	def __init__(self, node):
 		super(verify_calibraionSM, self).__init__()
 		self.name = 'verify_calibraion'
 
 		# parameters of this behavior
+		OperatableStateMachine.initialize_ros(node)
+		Logger.initialize(node)
 		self.add_parameter('eye_in_hand_mode', False)
 		self.add_parameter('base_link', '/base_link')
 		self.add_parameter('tip_link', '/tool0_controller')

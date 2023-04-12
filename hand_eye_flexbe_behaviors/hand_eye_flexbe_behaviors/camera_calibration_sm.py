@@ -26,11 +26,13 @@ class camera_calibrationSM(Behavior):
 	'''
 
 
-	def __init__(self):
+	def __init__(self, node):
 		super(camera_calibrationSM, self).__init__()
 		self.name = 'camera_calibration'
 
 		# parameters of this behavior
+		OperatableStateMachine.initialize_ros(node)
+		Logger.initialize(node)
 		self.add_parameter('pic_num', 30)
 		self.add_parameter('square_size', 0.0200)
 		self.add_parameter('marker_size', 0.0150)
