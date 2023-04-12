@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-from flexbe_core import EventState
+from flexbe_core import EventState, Logger
 import cv2
 import pyrealsense2 as rs
 import numpy as np
 import os
-from pathlib import Path
+from ament_index_python.packages import get_package_share_directory
 
 
 
@@ -20,7 +20,6 @@ class TakePictureState(EventState):
     def __init__(self, pic_num, camera_type):
         """Constructor"""
         super(TakePictureState, self).__init__(outcomes=['done', 'failed'])
-        print("+++++++++++++++++++++++++++++++++++++++")
         self.excu_num = 1
         self.pic_num = pic_num
         if camera_type == 'realsense':
@@ -42,7 +41,8 @@ class TakePictureState(EventState):
         self.preset_name = ""
         self.capture = cv2.VideoCapture(1)
 
-        self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..','charuco_detector/','config/','camera_calibration/','pic/')
+        self.save_pwd = get_package_share_directory('charuco_detector') + '/config/camera_calibration/pic/'
+        Logger.logwarn(self.save_pwd)
     
 
 
@@ -85,13 +85,13 @@ class TakePictureState(EventState):
             #cv2.imshow('Real', images)
             key = cv2.waitKey(1)
             if key  == 13 : #enter
-                print("----------------------------------------------")
+                Logger.logwarn("----------------------------------------------")
                 # cv2.imwrite("./../../../config/pic/camera-pic-of-charucoboard-"+str(self.excu_num)+".jpg",images)
                 cv2.imwrite(self.save_pwd+"camera-pic-of-charucoboard-"+str(self.excu_num)+".jpg",images)
                 self.excu_num += 1
             #cv2.imshow('frame', frame)
             elif key & 0xFF == ord('q')or key == 27: # q or esc
-                print("==========================================")
+                Logger.logwarn("==========================================")
                 self.excu_num = self.pic_num
                 return "failed"
 

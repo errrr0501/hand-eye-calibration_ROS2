@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import configparser,os
-import rospkg
 import numpy as np
 import tf
 from geometry_msgs.msg import Transform
 from visp_hand2eye_calibration.msg import TransformArray
 from flexbe_core import EventState
 from flexbe_core.proxy import ProxyServiceCaller
+from ament_index_python.packages import get_package_share_directory
 from visp_hand2eye_calibration.srv import compute_effector_camera_quick, compute_effector_camera_quickRequest
 
 
@@ -34,7 +34,7 @@ class ComputeCalibState(EventState):
 		self.camera_object_list = TransformArray()
 		self.world_effector_list = TransformArray()
 		self.calib_compute_client = ProxyServiceCaller({'/compute_effector_camera_quick': compute_effector_camera_quick})
-		self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..','charuco_detector/','config/','hand_eye_calibration/')
+		self.save_pwd = get_package_share_directory('charuco_detector') + '/config/hand_eye_calibration/'
 
 	
 	def execute(self, userdata):

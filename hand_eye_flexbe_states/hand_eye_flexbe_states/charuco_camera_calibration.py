@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flexbe_core import EventState
+from flexbe_core import EventState, Logger
 import time
 import numpy
 import cv2
@@ -8,6 +8,7 @@ import pickle
 import glob,os
 import configparser
 from sensor_msgs.msg import CameraInfo
+from ament_index_python.packages import get_package_share_directory
 
 class CharucoCameraCalibrationState(EventState):
 	"""
@@ -41,8 +42,8 @@ class CharucoCameraCalibrationState(EventState):
 		self.corners_all = [] # Corners discovered in all images processed
 		self.ids_all = [] # Aruco ids corresponding to corners discovered
 		self.image_size = None # Determined at runtime
-		self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..',',','charuco_detector_ROS2/','charuco_detector/','config/','camera_calibration/')
-
+		# self.save_pwd = os.path.join(os.path.dirname(__file__), '..','..','..',',','charuco_detector_ROS2/','charuco_detector/','config/','camera_calibration/')
+		self.save_pwd = get_package_share_directory('charuco_detector') + '/config/camera_calibration/'
 
 		self.images = glob.glob(self.save_pwd + 'pic/camera-pic-of-charucoboard-*.jpg')
 
@@ -97,11 +98,11 @@ class CharucoCameraCalibrationState(EventState):
 				cv2.imshow('Charuco board', img)
 				cv2.waitKey(0)
 			else:
-				print("Not able to detect a charuco board in image: {}".format(iname))
+				Logger.logwarn("Not able to detect a charuco board in image: {}".format(iname))
 
 		# Destroy any open CV windows
 		cv2.destroyAllWindows()
-		print("==========================================================================")
+		Logger.logwarn("==========================================================================")
 		# Make sure at least one image was found
 		if len(self.images) < 1:
 			# Calibration failed because there were no images, warn the user
@@ -113,7 +114,7 @@ class CharucoCameraCalibrationState(EventState):
 		# if we ever determined the image size
 		if not self.image_size:
 			# Calibration failed because we didn't see any charucoboards of the PatternSize used
-			print("Calibration was unsuccessful. We couldn't detect charucoboards in any of the images supplied. Try changing the patternSize passed into Charucoboard_create(), or try different pictures of charucoboards.")
+			Logger.logwarn("Calibration was unsuccessful. We couldn't detect charucoboards in any of the images supplied. Try changing the patternSize passed into Charucoboard_create(), or try different pictures of charucoboards.")
 			# Exit for failure
 			return "failed"
 
