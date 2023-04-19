@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import configparser,os
 import numpy as np
@@ -8,7 +8,7 @@ from visp_hand2eye_calibration.msg import TransformArray
 from flexbe_core import EventState
 from flexbe_core.proxy import ProxyServiceCaller
 from ament_index_python.packages import get_package_share_directory
-from visp_hand2eye_calibration.srv import compute_effector_camera_quick, compute_effector_camera_quickRequest
+from visp_hand2eye_calibration.srv import ComputeEffectorCameraQuick
 
 
 class ComputeCalibState(EventState):
@@ -24,21 +24,30 @@ class ComputeCalibState(EventState):
 		"""Constructor"""
 		super(ComputeCalibState, self).__init__(outcomes=['finish'], input_keys=['base_h_tool', 'camera_h_charuco'])
 		self.eye_in_hand_mode = eye_in_hand_mode
+		self.camera_object_list = TransformArray()
+		self.world_effector_list = TransformArray()
+		ProxyServiceCaller._initialize(ComputeCalibState._node)
+		self.calib_compute_client = ProxyServiceCaller({'/compute_effector_camera_quick':ComputeEffectorCameraQuick})
+		self.save_pwd = get_package_share_directory('charuco_detector') + '/config/hand_eye_calibration/'
+		self.config = configparser.ConfigParser()
+		self.config.optionxform = str #reference: http://docs.python.org/library/configparser.html
+
 		if customize_file:
 			self.calibration_file_name = str(calibration_file_name)
+			with open(self.save_pwd+ self.calibration_file_name, 'w') as file:
+				self.config.write(file)
 		else:
 			if eye_in_hand_mode:
 				self.calibration_file_name = "eye_in_hand_calibration.ini"
 			else:
 				self.calibration_file_name = "eye_to_hand_calibration.ini"
-		self.camera_object_list = TransformArray()
-		self.world_effector_list = TransformArray()
-		self.calib_compute_client = ProxyServiceCaller({'/compute_effector_camera_quick': compute_effector_camera_quick})
-		self.save_pwd = get_package_share_directory('charuco_detector') + '/config/hand_eye_calibration/'
+
 
 	
 	def execute(self, userdata):
-		req = compute_effector_camera_quickRequest(self.camera_object_list, self.world_effector_list)
+		req = ComputeEffectorCameraQuick.Request()
+		req.camera_object = self.camera_object_list
+		req.world_effector = self.world_effector_list
 		print ("========================================================================================================")
 		res = self.calib_compute_client.call('/compute_effector_camera_quick', req)
 		
@@ -50,25 +59,25 @@ class ComputeCalibState(EventState):
 		print('qz = ' + str(res.effector_camera.rotation.z))
 		print('qw = ' + str(res.effector_camera.rotation.w))
 
-		config = configparser.ConfigParser()
-		config.optionxform = str #reference: http://docs.python.org/library/configparser.html
-		config.read(self.save_pwd + self.calibration_file_name)
+		# config = configparser.ConfigParser()
+		# config.optionxform = str #reference: http://docs.python.org/library/configparser.html
+		self.config.read(self.save_pwd + self.calibration_file_name)
 		# config.read(curr_path + '/config/hand_eye_calibration/'+ self.calibration_file_name)
 
-		if config.get("hand_eye_calibration" ,"x") != None:
-			pass
-		else:
-			config.add_section("hand_eye_calibration")
-		config.set("hand_eye_calibration", "x",  str(res.effector_camera.translation.x))
-		config.set("hand_eye_calibration", "y",  str(res.effector_camera.translation.y))
-		config.set("hand_eye_calibration", "z",  str(res.effector_camera.translation.z))
-		config.set("hand_eye_calibration", "qx", str(res.effector_camera.rotation.x))
-		config.set("hand_eye_calibration", "qy", str(res.effector_camera.rotation.y))
-		config.set("hand_eye_calibration", "qz", str(res.effector_camera.rotation.z))
-		config.set("hand_eye_calibration", "qw", str(res.effector_camera.rotation.w))
+		# if self.config.get("hand_eye_calibration" ,"x") != None:
+		# 	pass
+		# else:
+		self.config.add_section("hand_eye_calibration")
+		self.config.set("hand_eye_calibration", "x",  str(res.effector_camera.translation.x))
+		self.config.set("hand_eye_calibration", "y",  str(res.effector_camera.translation.y))
+		self.config.set("hand_eye_calibration", "z",  str(res.effector_camera.translation.z))
+		self.config.set("hand_eye_calibration", "qx", str(res.effector_camera.rotation.x))
+		self.config.set("hand_eye_calibration", "qy", str(res.effector_camera.rotation.y))
+		self.config.set("hand_eye_calibration", "qz", str(res.effector_camera.rotation.z))
+		self.config.set("hand_eye_calibration", "qw", str(res.effector_camera.rotation.w))
 
 		with open(self.save_pwd+ self.calibration_file_name, 'w') as file:
-			config.write(file)
+			self.config.write(file)
 		return 'finish'
 	
 	def on_enter(self, userdata):

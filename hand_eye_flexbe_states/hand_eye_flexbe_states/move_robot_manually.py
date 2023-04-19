@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-from flexbe_core import EventState
+from flexbe_core import EventState, Logger
+from rclpy.clock import Clock, ClockType
+
 
 
 class MoveRobotManuallyState(EventState):
@@ -21,12 +23,14 @@ class MoveRobotManuallyState(EventState):
         self._pose_count = 0
 
     def execute(self, userdata):
-        elapsed = MoveRobotManuallyState._node.get_clock().now() - self._start_time
+        # elapsed = MoveRobotManuallyState._node.get_clock().now().seconds() - self._start_time
+        elapsed = Clock(clock_type=ClockType.ROS_TIME).now() - self._start_time
         userdata.result_compute = self._pose_count >= self._pose_num
-        if elapsed.to_sec() > self._wait:
+        if elapsed.nanoseconds / 1000000000 > self._wait:
             return 'done'
 
     def on_enter(self, userdata):
         '''Upon entering the state, save the current time and start waiting.'''
-        self._start_time = MoveRobotManuallyState._node.get_clock().now()
+        self._start_time = Clock(clock_type=ClockType.ROS_TIME).now()   
+        print(self._start_time) 
         self._pose_count += 1
