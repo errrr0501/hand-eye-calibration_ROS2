@@ -64,10 +64,10 @@ class ComputeCalibState(EventState):
 		self.config.read(self.save_pwd + self.calibration_file_name)
 		# config.read(curr_path + '/config/hand_eye_calibration/'+ self.calibration_file_name)
 
-		# if self.config.get("hand_eye_calibration" ,"x") != None:
-		# 	pass
-		# else:
-		self.config.add_section("hand_eye_calibration")
+		if self.config.get("hand_eye_calibration" ,"x") != None:
+			pass
+		else:
+			self.config.add_section("hand_eye_calibration")
 		self.config.set("hand_eye_calibration", "x",  str(res.effector_camera.translation.x))
 		self.config.set("hand_eye_calibration", "y",  str(res.effector_camera.translation.y))
 		self.config.set("hand_eye_calibration", "z",  str(res.effector_camera.translation.z))
